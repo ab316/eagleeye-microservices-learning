@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    database: PostgreSQL
+    show-sql: true
+    properties:
+      hibernate.dialect: "org.hibernate.dialect.PostgreSQLDialect"
+
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://database:5432/eagleeye_local
+    username: postgres
+    password: p0stgr@s
