@@ -1,5 +1,11 @@
 management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
   endpoint:
     health.showDetails: always
+
   info:
     git.mode: full
