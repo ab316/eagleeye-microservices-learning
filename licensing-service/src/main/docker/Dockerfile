@@ -13,9 +13,7 @@ RUN apt update \
 WORKDIR /usr/local/${SERVICE_NAME}
 COPY ${JAR_FILE} ./
 
-#WORKDIR /home
 COPY run.sh run.sh
 RUN chmod +x run.sh
 
-#CMD /bin/bash
 CMD ./run.sh

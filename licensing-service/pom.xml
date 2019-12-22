@@ -22,7 +22,7 @@
         <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
         <docker.image.repository>abaig316</docker.image.repository>
         <docker.image.prefix>eagleeye</docker.image.prefix>
-<!--        <docker.image.tag>${project.version}</docker.image.tag>-->
+        <!--        <docker.image.tag>${project.version}</docker.image.tag>-->
         <docker.image.tag>latest</docker.image.tag>
     </properties>
 
@@ -39,7 +39,7 @@
             <scope>runtime</scope>
         </dependency>
 
-<!--        Spring Boot-->
+        <!--        Spring Boot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -62,7 +62,7 @@
             <optional>true</optional>
         </dependency>
 
-<!--        Spring Cloud-->
+        <!--        Spring Cloud-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-client</artifactId>
@@ -113,6 +113,8 @@
                 <artifactId>git-commit-id-plugin</artifactId>
             </plugin>
 
+            <!-- This is to copy the contents of the docker directory to the target directory
+            as the Spotify dockerfile plugin doesn't seem to work otherwise-->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
@@ -149,9 +151,9 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <contextDirectory>target</contextDirectory>
                     <repository>${docker.image.repository}/${docker.image.prefix}.${project.artifactId}</repository>
                     <tag>${docker.image.tag}</tag>
-                    <contextDirectory>target</contextDirectory>
                     <buildArgs>
                         <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
                         <SERVICE_NAME>${project.artifactId}</SERVICE_NAME>
