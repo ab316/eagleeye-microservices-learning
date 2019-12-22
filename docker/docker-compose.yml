@@ -1,16 +1,20 @@
 version: "3"
 
 services:
-#  licensing-service:
-#    image: abaig316/eagleeye.licensing-service
-#    depends_on:
-#      - config-server
-#      - postgres
-#    environment:
-#      spring.profiles.active: docker
-#      spring.cloud.config.uri: "http://config-server:8888"
-#    ports:
-#      - "8080:8080"
+  licensing-service:
+    image: abaig316/eagleeye.licensing-service
+    depends_on:
+      - config-server
+      - postgres
+    environment:
+      PROFILE: docker
+      CONFIGSERVER_HOST: config-server
+      CONFIGSERVER_PORT: 8888
+      CONFIGSERVER_URI: "http://config-server:8888"
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+    ports:
+      - "8080:8080"
 
   config-server:
     image: abaig316/eagleeye.config-server

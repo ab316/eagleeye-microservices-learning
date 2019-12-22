@@ -114,6 +114,28 @@
             </plugin>
 
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/docker</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.12</version>
@@ -127,11 +149,11 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <dockerfile>Dockerfile</dockerfile>
                     <repository>${docker.image.repository}/${docker.image.prefix}.${project.artifactId}</repository>
                     <tag>${docker.image.tag}</tag>
+                    <contextDirectory>target</contextDirectory>
                     <buildArgs>
-                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
                         <SERVICE_NAME>${project.artifactId}</SERVICE_NAME>
                     </buildArgs>
                 </configuration>
