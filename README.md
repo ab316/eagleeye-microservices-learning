@@ -26,11 +26,17 @@ The application consists of the following microservices
 ### Procedure
 1. Build the project `mvn clean install`
 1. Run docker-compose `docker-compose -f docker/docker-compose.yml up -d`
-1. Create an empty git repository called *config-repo*
-1. Copy the folder *licensing-service* from *config-server/src/main/resource/config*
-to the new git repository
-1. `git remote add origin http://localhost:3000/abdullah/config-repo.git`
-1. `git push -u origin master`
+1. Setup Gitea
+    1. Go `http://localhost:3000`
+    1. setup the administration account
+    1. Click the Install Gitea button
+    1. Create a new repository call config-repo
+    1. Clone the repository on your machine
+1. Put configuration in the config-repo
+    1. Copy the folder *licensing-service* from *config-server/src/main/resource/config* to the new git repository
+    1. `git remote add origin http://localhost:3000/abdullah/config-repo.git`
+    1. `git push -u origin master`
+1. You will need to do `docker-compose start` the first time since the application will fail due to no config-repo repository present
 1. Access the services
     1. licensing service at `http://localhost:8080`
     1. Config service at `http://localhost:8888`

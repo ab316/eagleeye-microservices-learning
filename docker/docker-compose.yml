@@ -22,6 +22,8 @@ services:
       PROFILE: docker
     ports:
       - "8888:8888"
+    depends_on:
+      - gitea
 
   postgres:
     image: postgres:12
@@ -49,7 +51,7 @@ services:
       - "22:22"
     restart: always
     depends_on:
-      - postgres
+      - postgres-gitea
 
   postgres-gitea:
     image: postgres:12
