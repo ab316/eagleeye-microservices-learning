@@ -18,14 +18,50 @@ services:
 
   config-server:
     image: abaig316/eagleeye.config-server
+    environment:
+      PROFILE: docker
     ports:
       - "8888:8888"
 
   postgres:
     image: postgres:12
     environment:
-      POSTGRES_USERNAME: postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: p0stgr@s
       POSTGRES_DB: eagleeye_local
     ports:
       - "5432:5432"
+
+  gitea:
+    image: gitea/gitea:1.8.3
+    environment:
+      USER_UID: 1000
+      USER_GID: 1000
+      DB_TYPE: postgres
+      DB_HOST: postgres-gitea:5432
+      DB_NAME: gitea
+      DB_USER: gitea
+      DB_PASSWD: gitea
+    volumes:
+      - gitea-data:/data
+    ports:
+      - "3000:3000"
+      - "22:22"
+    restart: always
+    depends_on:
+      - postgres
+
+  postgres-gitea:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: gitea
+      POSTGRES_PASSWORD: gitea
+      POSTGRES_DB: gitea
+    volumes:
+    - postgres-gitea-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  gitea-data:
+  postgres-gitea-data:
