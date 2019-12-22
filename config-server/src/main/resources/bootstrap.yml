@@ -1,0 +1,6 @@
+spring:
+  cloud:
+    config:
+      server:
+        # encrypt.enabled seems to only works in bootstrap.yml not in application.yml
+        encrypt.enabled: false

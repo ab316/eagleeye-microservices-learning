@@ -23,7 +23,9 @@ The application consists of the following microservices
 * Docker
 * Docker Compose
 
-### Procedure
+### Docker Compose
+1. Set encryption key environment variable `export ENCRYPT_KEY=<RANDOM KEY>`
+1.  For the the existing passwords, the key is `IAMANENCRYPTIONKEY`
 1. Build the project `mvn clean install`
 1. Run docker-compose `docker-compose -f docker/docker-compose.yml up -d`
 1. Setup Gitea

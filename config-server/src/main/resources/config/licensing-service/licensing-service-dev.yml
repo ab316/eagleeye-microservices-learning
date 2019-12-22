@@ -2,4 +2,4 @@ spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/eagleeye_dev
     username: postgres
-    password: p0stgr@s
+    password: "{cipher}924df29cf1dd92347d499f8fd0ef0f9b30f53cb77fbf89f5d2bfc3254204d441"

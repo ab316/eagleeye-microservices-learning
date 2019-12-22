@@ -8,6 +8,7 @@ services:
       - postgres
     environment:
       PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
       CONFIGSERVER_HOST: config-server
       CONFIGSERVER_PORT: 8888
       CONFIGSERVER_URI: "http://config-server:8888"
@@ -20,6 +21,7 @@ services:
     image: abaig316/eagleeye.config-server
     environment:
       PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
     ports:
       - "8888:8888"
     depends_on:
