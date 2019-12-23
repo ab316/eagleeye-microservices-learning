@@ -20,6 +20,7 @@
 	</properties>
 
 	<modules>
+		<module>eureka-server</module>
 		<module>config-server</module>
 		<module>organization-service</module>
 		<module>licensing-service</module>

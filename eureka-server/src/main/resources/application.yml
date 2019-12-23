@@ -1,0 +1,11 @@
+server:
+  port: 8761
+
+eureka:
+  client:
+    # Don't register with Eureka service since this application is the Eureka server itself
+    registerWithEureka: false
+    # Don't cache the registry information locally. This should only be true for clients
+    fetchRegistry: false
+#  server:
+#    waitTimeInMsWhenSyncEmpty: 5

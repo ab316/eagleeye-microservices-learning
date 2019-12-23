@@ -27,6 +27,13 @@ services:
     depends_on:
       - gitea
 
+  eureka-server:
+    image: abaig316/eagleeye.eureka-server
+    environment:
+      PROFILE: docker
+    ports:
+      - "8761:8761"
+
   postgres:
     image: postgres:12
     environment:
