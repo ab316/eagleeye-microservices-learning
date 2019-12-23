@@ -4,4 +4,4 @@ spring:
       server:
         git:
           uri: http://gitea:3000/abdullah/config-repo.git
-          searchPaths: licensing-service
+          searchPaths: "*"

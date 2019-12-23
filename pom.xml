@@ -21,6 +21,7 @@
 
 	<modules>
 		<module>config-server</module>
+		<module>organization-service</module>
 		<module>licensing-service</module>
 	</modules>
 
