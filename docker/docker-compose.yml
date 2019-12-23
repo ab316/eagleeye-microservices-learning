@@ -4,6 +4,7 @@ services:
   licensing-service:
     image: abaig316/eagleeye.licensing-service
     depends_on:
+      - eureka-server
       - config-server
       - postgres
     environment:
@@ -17,6 +18,30 @@ services:
     ports:
       - "8080:8080"
 
+  organization-service:
+    image: abaig316/eagleeye.organization-service
+    depends_on:
+      - eureka-server
+      - config-server
+      - postgres
+    environment:
+      PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
+      CONFIGSERVER_HOST: config-server
+      CONFIGSERVER_PORT: 8888
+      CONFIGSERVER_URI: "http://config-server:8888"
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+    ports:
+      - "8081:8081"
+
+  eureka-server:
+    image: abaig316/eagleeye.eureka-server
+    environment:
+      PROFILE: docker
+    ports:
+      - "8761:8761"
+
   config-server:
     image: abaig316/eagleeye.config-server
     environment:
@@ -26,13 +51,6 @@ services:
       - "8888:8888"
     depends_on:
       - gitea
-
-  eureka-server:
-    image: abaig316/eagleeye.eureka-server
-    environment:
-      PROFILE: docker
-    ports:
-      - "8761:8761"
 
   postgres:
     image: postgres:12
