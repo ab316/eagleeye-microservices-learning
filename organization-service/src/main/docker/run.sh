@@ -3,22 +3,30 @@
 #NOTE: THIS FILE MUST HAVE UNIX LINE-ENDINGS AS IT WILL RUN IN A LINUX CONTAINER
 
 echo "******************************************************************************************"
-echo "Waiting for the configuration server to start at: $CONFIGSERVER_HOST:$CONFIGSERVER_PORT"
+echo "Waiting for the eureka server to start at: $EUREKASERVER_HOST:$EUREKASERVER_PORT"
 echo "******************************************************************************************"
-while ! nc -z "$CONFIGSERVER_HOST" "$CONFIGSERVER_PORT"; do sleep 3; done
-echo ">>>>>>>>>>>>>>>>> Configuration Server has started"
+while ! nc -z "$EUREKASERVER_HOST" "$EUREKASERVER_PORT"; do sleep 3; done
+echo ">>>>>>>>>>>>>>>>> Eureka Server has started"
+echo ""
 
+echo "******************************************************************************************"
+echo "Waiting for the config server to start at: config-server:$EUREKASERVER_PORT"
+echo "******************************************************************************************"
+while ! nc -z config-server "$CONFIGSERVER_PORT"; do sleep 3; done
+echo ">>>>>>>>>>>>>>>>> Configuration Server has started"
+echo ""
 
 echo "******************************************************************************************"
 echo "Waiting for the database server to start at: $DATABASE_HOST:$DATABASE_PORT"
 echo "******************************************************************************************"
 while ! nc -z "$DATABASE_HOST" "$DATABASE_PORT"; do sleep 3; done
 echo ">>>>>>>>>>>>>>>>> Database Server has started"
+echo ""
 
 
 echo "******************************************************************************************"
-echo "Starting @project.artifactId@ with configuration server at: $CONFIGSERVER_URI"
+echo "Starting @project.artifactId@ with eureka server at: $EUREKASERVER_URI"
 echo "******************************************************************************************"
-java  -Dspring.cloud.config.uri="$CONFIGSERVER_URI" \
+java  -Deureka.client.serviceUrl.defaultZone="$EUREKASERVER_URI" \
       -Dspring.profiles.active="$PROFILE" \
       -jar /usr/local/@project.artifactId@/@project.build.finalName@.jar

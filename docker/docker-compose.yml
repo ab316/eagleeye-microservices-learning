@@ -10,9 +10,10 @@ services:
     environment:
       PROFILE: docker
       ENCRYPT_KEY: ${ENCRYPT_KEY}
-      CONFIGSERVER_HOST: config-server
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
       CONFIGSERVER_PORT: 8888
-      CONFIGSERVER_URI: "http://config-server:8888"
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
     ports:
@@ -27,9 +28,10 @@ services:
     environment:
       PROFILE: docker
       ENCRYPT_KEY: ${ENCRYPT_KEY}
-      CONFIGSERVER_HOST: config-server
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
       CONFIGSERVER_PORT: 8888
-      CONFIGSERVER_URI: "http://config-server:8888"
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
     ports:
@@ -47,6 +49,9 @@ services:
     environment:
       PROFILE: docker
       ENCRYPT_KEY: ${ENCRYPT_KEY}
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
     ports:
       - "8888:8888"
     depends_on:

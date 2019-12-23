@@ -4,9 +4,16 @@ server:
 spring:
   profiles:
     active: native
-
   cloud:
     config:
       server:
-        native:
-          searchLocations: classpath:/config/licensing-service
+        native.searchLocations: classpath:/config/licensing-service
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
