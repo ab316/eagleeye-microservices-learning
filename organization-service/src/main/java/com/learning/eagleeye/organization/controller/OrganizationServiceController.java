@@ -3,9 +3,9 @@ package com.learning.eagleeye.organization.controller;
 import com.learning.eagleeye.organization.model.Organization;
 import com.learning.eagleeye.organization.service.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping(value = "/v1/organizations")
@@ -24,8 +24,9 @@ public class OrganizationServiceController {
     }
 
     @GetMapping(value = "/{organizationId}")
-    public Optional<Organization> get(@PathVariable String organizationId) {
-        return organizationService.get(organizationId);
+    public Organization get(@PathVariable String organizationId) {
+        return organizationService.get(organizationId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No organization with given id"));
     }
 
     @PostMapping(value = "/")

@@ -7,7 +7,10 @@ spring:
   cloud:
     config:
       server:
-        native.searchLocations: classpath:/config/licensing-service
+        native:
+          searchLocations:
+          - classpath:/config/licensing-service
+          - classpath:/config/organization-service
 
 eureka:
   instance:

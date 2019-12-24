@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/v1/organizations/{organizationId}/licenses")
+@RequestMapping(value = "/v1/licenses")
 public class LicenseServiceController {
 
     private LicenseService licenseService;
@@ -18,25 +19,30 @@ public class LicenseServiceController {
         this.licenseService = licenseService;
     }
 
-    @GetMapping(value = "/")
-    public List<License> getLicense(@PathVariable String organizationId) {
-        return licenseService.getLicenses(organizationId);
+    @GetMapping(value = "/{licenseId}")
+    public Optional<License> getLicense(@PathVariable String licenseId) {
+        return licenseService.getLicense(licenseId);
     }
 
-    @GetMapping(value = "/{licenseId}")
-    public License getLicense(@PathVariable String organizationId, @PathVariable String licenseId) {
-        return licenseService.getLicense(organizationId, licenseId);
+    @GetMapping(value = "/")
+    public Iterable<License> getLicenses() {
+        return licenseService.getLicenses();
+    }
+
+    @GetMapping(value = "/organization/{organizationId}")
+    public List<License> getLicenses(@PathVariable String organizationId) {
+        return licenseService.getLicenses(organizationId);
     }
 
     @PostMapping(value = "/")
     public String saveLicense(@RequestBody License license) {
         licenseService.saveLicense(license);
-        return license.getLicenseId();
+        return license.getId();
     }
 
     @PutMapping(value = "/")
     public void updateLicense(@RequestBody License license) {
-        licenseService.saveLicense(license);
+        licenseService.updateLicense(license);
     }
 
     @DeleteMapping(value = "/")

@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class License {
     @Id
     @Column(nullable = false)
-    private String licenseId;
+    private String id;
 
     @Column(nullable = false)
     private String organizationId;
@@ -22,4 +22,16 @@ public class License {
 
     @Column(nullable = false)
     private String licenseType;
+
+    @Transient
+    private String organizationName;
+
+    @Transient
+    private String contactName;
+
+    @Transient
+    private String contactEmail;
+
+    @Transient
+    private String contactPhone;
 }
