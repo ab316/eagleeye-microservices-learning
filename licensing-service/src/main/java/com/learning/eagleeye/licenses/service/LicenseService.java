@@ -1,29 +1,32 @@
 package com.learning.eagleeye.licenses.service;
 
-import com.learning.eagleeye.licenses.client.OrganizationFeignClient;
+import com.learning.eagleeye.licenses.client.OrganizationRestTemplateClient;
 import com.learning.eagleeye.licenses.model.License;
 import com.learning.eagleeye.licenses.model.Organization;
 import com.learning.eagleeye.licenses.repository.LicenseRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
 import java.util.*;
 
 @Service
+@Slf4j
 public class LicenseService {
 
     private LicenseRepository licenseRepository;
-    private OrganizationFeignClient organizationClient;
+    private OrganizationRestTemplateClient organizationClient;
 
     @Autowired
-    public LicenseService(LicenseRepository licenseRepository, OrganizationFeignClient organizationFeignClient) {
+    public LicenseService(LicenseRepository licenseRepository, OrganizationRestTemplateClient organizationFeignClient) {
         this.licenseRepository = licenseRepository;
         this.organizationClient = organizationFeignClient;
     }
 
     public Optional<License> getLicense(String licenseId) {
         var maybeLicense = licenseRepository.findById(licenseId);
-        maybeLicense.ifPresent(license -> organizationClient.getOrganization(license.getOrganizationId())
+        maybeLicense.ifPresent(license -> getOrganization(license.getOrganizationId())
                 .ifPresentOrElse(
                         org -> updateOrganizationDetails(license, org),
                         () -> license.setOrganizationId("<INVALID>")
@@ -39,7 +42,7 @@ public class LicenseService {
             if (organizationMap.containsKey(license.getOrganizationId())) {
                 updateOrganizationDetails(license, organizationMap.get(license.getOrganizationId()));
             } else {
-                var maybeOrg = organizationClient.getOrganization(license.getOrganizationId());
+                var maybeOrg = getOrganization(license.getOrganizationId());
                 maybeOrg.ifPresentOrElse(
                         org -> organizationMap.put(license.getOrganizationId(), org),
                         () -> license.setOrganizationId("<INVALID>")
@@ -50,7 +53,7 @@ public class LicenseService {
     }
 
     public List<License> getLicenses(String organizationId) {
-        var maybeOrg = organizationClient.getOrganization(organizationId);
+        var maybeOrg = getOrganization(organizationId);
         if (maybeOrg.isEmpty()) {
             return new ArrayList<>();
         }
@@ -80,5 +83,14 @@ public class LicenseService {
         license.setContactName(org.getContactName());
         license.setContactEmail(org.getContactEmail());
         license.setContactPhone(org.getContactPhone());
+    }
+
+    private Optional<Organization> getOrganization(String organizationId) {
+        try {
+            return organizationClient.getOrganization(organizationId);
+        } catch (RestClientException ex) {
+            log.error("Failed to fetch organization: [{}]", ex.getMessage());
+            return Optional.empty();
+        }
     }
 }
