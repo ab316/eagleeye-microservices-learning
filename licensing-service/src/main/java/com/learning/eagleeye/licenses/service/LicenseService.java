@@ -7,7 +7,6 @@ import com.learning.eagleeye.licenses.repository.LicenseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
 import java.util.*;
 
@@ -86,11 +85,6 @@ public class LicenseService {
     }
 
     private Optional<Organization> getOrganization(String organizationId) {
-        try {
-            return organizationClient.getOrganization(organizationId);
-        } catch (RestClientException ex) {
-            log.error("Failed to fetch organization: [{}]", ex.getMessage());
-            return Optional.empty();
-        }
+        return organizationClient.getOrganization(organizationId);
     }
 }
