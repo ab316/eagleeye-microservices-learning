@@ -15,6 +15,7 @@ spring:
           searchLocations:
           - classpath:/config/licensing-service
           - classpath:/config/organization-service
+          - classpath:/config/zuul-server
 
 eureka:
   instance:
