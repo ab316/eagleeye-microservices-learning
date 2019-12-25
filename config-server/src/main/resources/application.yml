@@ -2,11 +2,15 @@ server:
   port: 8888
 
 spring:
-  profiles:
-    active: native
+#  profiles:
+#    active: native
   cloud:
     config:
       server:
+        git:
+          uri: http://localhost:3000/abdullah/config-repo.git
+          searchPaths: "*"
+
         native:
           searchLocations:
           - classpath:/config/licensing-service
