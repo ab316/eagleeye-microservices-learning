@@ -6,7 +6,6 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
@@ -22,7 +21,12 @@ public class OrganizationRestTemplateClient {
         this.template = template;
     }
 
-    @HystrixCommand(fallbackMethod = "buildFallbackOrganization", commandProperties = {
+    @HystrixCommand(fallbackMethod = "buildFallbackOrganization",
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "30"),
+                    @HystrixProperty(name = "maxQueueSize", value = "10")
+            },
+            commandProperties = {
             @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500")
     })
     public Optional<Organization> getOrganization(String organizationId) {

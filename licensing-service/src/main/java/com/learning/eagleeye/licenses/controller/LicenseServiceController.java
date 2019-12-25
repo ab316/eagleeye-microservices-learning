@@ -24,11 +24,6 @@ public class LicenseServiceController {
         return licenseService.getLicense(licenseId);
     }
 
-    @GetMapping(value = "/")
-    public Iterable<License> getLicenses() {
-        return licenseService.getLicenses();
-    }
-
     @GetMapping(value = "/organization/{organizationId}")
     public List<License> getLicenses(@PathVariable String organizationId) {
         return licenseService.getLicenses(organizationId);
