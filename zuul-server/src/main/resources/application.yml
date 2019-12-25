@@ -1,6 +1,10 @@
 server:
   port: 5555
 
+logging:
+  level:
+    com.learning.eagleeye.zuul.*: DEBUG
+
 eureka:
   instance:
     preferIpAddress: true
