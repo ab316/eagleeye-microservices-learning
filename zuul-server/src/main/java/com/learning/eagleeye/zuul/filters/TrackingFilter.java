@@ -44,7 +44,7 @@ public class TrackingFilter extends ZuulFilter {
         }
 
         RequestContext ctx = RequestContext.getCurrentContext();
-        log.debug("Processing incoming request for {}.", ctx.getRequest().getRequestURI());
+        log.debug("Processing incoming request for {}", ctx.getRequest().getRequestURI());
 
         return null;
     }

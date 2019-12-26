@@ -3,6 +3,11 @@ server:
   error:
     include-stacktrace: on_trace_param
 
+security:
+  oauth2:
+    client:
+      grant-type: client_credentials
+
 eureka:
   instance:
     preferIpAddress: true
