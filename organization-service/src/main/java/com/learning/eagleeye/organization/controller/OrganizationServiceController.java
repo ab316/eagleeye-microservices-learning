@@ -40,8 +40,9 @@ public class OrganizationServiceController {
         organizationService.update(organization);
     }
 
-    @DeleteMapping(value = "/")
-    public void delete(@RequestBody Organization organization) {
-        organizationService.delete(organization);
+    @DeleteMapping(value = "/{organizationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String organizationId) {
+        organizationService.delete(organizationId);
     }
 }

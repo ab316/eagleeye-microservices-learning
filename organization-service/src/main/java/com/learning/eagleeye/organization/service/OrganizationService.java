@@ -3,6 +3,7 @@ package com.learning.eagleeye.organization.service;
 import com.learning.eagleeye.organization.model.Organization;
 import com.learning.eagleeye.organization.repository.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -35,7 +36,9 @@ public class OrganizationService {
         organizationRepository.save(organization);
     }
 
-    public void delete(Organization organization) {
-        organizationRepository.deleteById(organization.getId());
+    public void delete(String organizationId) {
+        try {
+            organizationRepository.deleteById(organizationId);
+        } catch (EmptyResultDataAccessException ignored) { }
     }
 }
