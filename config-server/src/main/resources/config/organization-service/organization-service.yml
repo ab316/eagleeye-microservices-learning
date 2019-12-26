@@ -15,5 +15,7 @@ spring:
 
 security:
   oauth2:
+    client:
+      grant-type: client_credentials
     resource:
       userInfoUri: http://localhost:8901/user

@@ -4,6 +4,8 @@ zuul:
   routes:
     organization-service: /organization/**
     licensing-service: /licensing/**
+  # This is required to propagate the authentication header (which is the 3rd one in this list in default setting)
+  sensitiveHeaders: Cookie,Set-Cookie
 
 hystrix:
   command:
