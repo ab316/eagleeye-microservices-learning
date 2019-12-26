@@ -27,10 +27,13 @@ public class OrganizationRestTemplateClient {
                     @HystrixProperty(name = "maxQueueSize", value = "10")
             },
             commandProperties = {
-            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "500")
-    })
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000")
+            })
     public Optional<Organization> getOrganization(String organizationId) {
-        var entity = template.getForEntity("http://organization-service/v1/organizations/{organizationId}", Organization.class, organizationId);
+        var entity = template.getForEntity(
+                "http://zuul-server/api/organization/v1/organizations/{organizationId}",
+                Organization.class, organizationId
+        );
         return Optional.ofNullable(entity.getBody());
     }
 

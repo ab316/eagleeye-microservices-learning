@@ -3,6 +3,10 @@ server:
   error:
     include-stacktrace: on_trace_param
 
+logging:
+  level:
+    com.learning.eagleeye.*: DEBUG
+
 eureka:
   instance:
     preferIpAddress: true
