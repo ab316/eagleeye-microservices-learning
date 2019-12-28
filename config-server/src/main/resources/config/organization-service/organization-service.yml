@@ -5,13 +5,24 @@ spring:
     properties:
       hibernate.dialect: "org.hibernate.dialect.PostgreSQLDialect"
     hibernate.ddl-auto: create-drop
-
-
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/eagleeye_local
     username: postgres
     password: "{cipher}924df29cf1dd92347d499f8fd0ef0f9b30f53cb77fbf89f5d2bfc3254204d441"
+
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licensingGroup
+  rabbitmq:
+    addresses:
+      - http://localhost:5672
+    username: admin
+    password: admin
 
 security:
   oauth2:
