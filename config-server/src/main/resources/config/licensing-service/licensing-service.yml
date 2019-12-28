@@ -19,3 +19,6 @@ security:
       grant-type: client_credentials
     resource:
       userInfoUri: http://localhost:8901/user
+
+signing:
+  key: "{cipher}4c704140eae590379fc1ba34f5878fb855278ee87d2bdc7c99cd8d4c8e0eb93b7da769427fb392535a2bfb37e1de57a8"

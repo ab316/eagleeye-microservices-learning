@@ -1,5 +1,6 @@
 package com.learning.eagleeye.authentication.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,20 +8,39 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
-/**
- * Defines what applications and the user credentials the OAuth2 service knows about
- */
+import java.util.Arrays;
+
 @Configuration
-public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
+public class JwtOAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     private AuthenticationManager authenticationManager;
     private UserDetailsService userDetailsService;
+    private TokenStore tokenStore;
+    private DefaultTokenServices tokenServices;
+    private JwtAccessTokenConverter accessTokenConverter;
+    private TokenEnhancer tokenEnhancer;
     private PasswordEncoder passwordEncoder;
 
-    public OAuth2Config(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    @Autowired
+    public JwtOAuth2Config(AuthenticationManager authenticationManager,
+                           UserDetailsService userDetailsService,
+                           TokenStore tokenStore,
+                           DefaultTokenServices tokenServices,
+                           JwtAccessTokenConverter accessTokenConverter,
+                           TokenEnhancer tokenEnhancer,
+                           PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
+        this.tokenStore = tokenStore;
+        this.tokenServices = tokenServices;
+        this.accessTokenConverter = accessTokenConverter;
+        this.tokenEnhancer = tokenEnhancer;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -38,14 +58,15 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .scopes("webclient", "mobileclient");
     }
 
-    /**
-     * Defines the different components (AuthenticationManager and UserDetailsService) to be used with the service
-     *
-     * @throws Exception
-     */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer, accessTokenConverter));
+
         endpoints
+                .tokenStore(tokenStore)
+                .accessTokenConverter(accessTokenConverter)
+                .tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService);
     }

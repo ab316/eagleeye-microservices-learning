@@ -5,7 +5,6 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,7 +17,7 @@ public class OrganizationRestTemplateClient {
     private RestTemplate template;
 
     @Autowired
-    public OrganizationRestTemplateClient(OAuth2RestTemplate template) {
+    public OrganizationRestTemplateClient(RestTemplate template) {
         this.template = template;
     }
 
