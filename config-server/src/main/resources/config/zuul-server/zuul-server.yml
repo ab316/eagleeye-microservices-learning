@@ -4,6 +4,7 @@ zuul:
   routes:
     organization-service: /organization/**
     licensing-service: /licensing/**
+    authentication-service: /authentication/**
   # This is required to propagate the Authorization header (which is the 3rd one in this list in default setting)
   sensitiveHeaders: Cookie,Set-Cookie
 
