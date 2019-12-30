@@ -1,6 +1,7 @@
 package com.learning.eagleeye.licenses.client;
 
 import com.learning.eagleeye.licenses.model.Organization;
+import com.learning.eagleeye.licenses.repository.OrganizationRedisRepository;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +16,22 @@ import java.util.Optional;
 public class OrganizationRestTemplateClient {
 
     private RestTemplate template;
+    private OrganizationRedisRepository organizationRepository;
 
     @Autowired
-    public OrganizationRestTemplateClient(RestTemplate template) {
+    public OrganizationRestTemplateClient(RestTemplate template, OrganizationRedisRepository organizationRepository) {
         this.template = template;
+        this.organizationRepository = organizationRepository;
+    }
+
+    public Optional<Organization> getOrganization(String organizationId) {
+        Optional<Organization> organization = organizationRepository.findById(organizationId);
+        return organization.or(() -> {
+            log.debug("Organization [{}] not found in cache. Fetching from Organization service", organizationId);
+            Optional<Organization> fromService = getOrganizationFromService(organizationId);
+            fromService.ifPresent(this::cacheOrganization);
+            return fromService;
+        });
     }
 
     @HystrixCommand(fallbackMethod = "buildFallbackOrganization",
@@ -29,7 +42,7 @@ public class OrganizationRestTemplateClient {
             commandProperties = {
                     @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000")
             })
-    public Optional<Organization> getOrganization(String organizationId) {
+    public Optional<Organization> getOrganizationFromService(String organizationId) {
         var entity = template.getForEntity(
                 "http://zuul-server/api/organization/v1/organizations/{organizationId}",
                 Organization.class, organizationId
@@ -41,12 +54,17 @@ public class OrganizationRestTemplateClient {
         log.warn("Failed to retrieve organization [{}]. Cause: [{}]", organizationId, hysterixCommand.getMessage());
 
         log.warn("Generating fallback Organization");
+        String failedString = "FAILED TO RETRIEVE";
         return Optional.of(new Organization()
                 .withId(organizationId)
-                .withName("FAILED TO RETRIEVE")
-                .withContactName("FAILED TO RETRIEVE")
-                .withContactEmail("FAILED TO RETRIEVE")
-                .withContactPhone("FAILED TO RETRIEVE")
+                .withName(failedString)
+                .withContactName(failedString)
+                .withContactEmail(failedString)
+                .withContactPhone(failedString)
         );
+    }
+
+    private void cacheOrganization(Organization organization) {
+        organizationRepository.save(organization);
     }
 }

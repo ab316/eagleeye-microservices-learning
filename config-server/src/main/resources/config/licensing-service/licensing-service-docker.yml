@@ -8,3 +8,7 @@ security:
   oauth2:
     resource:
       userInfoUri: http://authentication-service:8901/user
+
+redis:
+  host: redis
+  port: 6379

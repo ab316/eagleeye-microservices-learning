@@ -52,3 +52,7 @@ management:
 
   info:
     git.mode: full
+
+redis:
+  host: localhost
+  port: 6379
