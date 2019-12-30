@@ -25,7 +25,7 @@ public class OrganizationRestTemplateClient {
     }
 
     public Optional<Organization> getOrganization(String organizationId) {
-        Optional<Organization> organization = organizationRepository.findById(organizationId);
+        Optional<Organization> organization = getOrganizationFromCache(organizationId);
         return organization.or(() -> {
             log.debug("Organization [{}] not found in cache. Fetching from Organization service", organizationId);
             Optional<Organization> fromService = getOrganizationFromService(organizationId);
@@ -64,7 +64,20 @@ public class OrganizationRestTemplateClient {
         );
     }
 
+    private Optional<Organization> getOrganizationFromCache(String organizationId) {
+        try {
+            return organizationRepository.findById(organizationId);
+        } catch (Exception ex) {
+            log.warn("Failed to retrieve from cache: [{}]", ex.getMessage());
+            return Optional.empty();
+        }
+    }
+
     private void cacheOrganization(Organization organization) {
-        organizationRepository.save(organization);
+        try {
+            organizationRepository.save(organization);
+        } catch (Exception ex) {
+            log.warn("Failed to cache: [{}]", ex.getMessage());
+        }
     }
 }
