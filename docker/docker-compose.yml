@@ -1,70 +1,91 @@
 version: "3"
 
 services:
-#  licensing-service:
-#    image: abaig316/eagleeye.licensing-service
-#    depends_on:
-#      - eureka-server
-#      - config-server
-#      - postgres
-#    environment:
-#      PROFILE: docker
-#      ENCRYPT_KEY: ${ENCRYPT_KEY}
-#      EUREKASERVER_HOST: eureka-server
-#      EUREKASERVER_PORT: 8761
-#      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
-#      CONFIGSERVER_PORT: 8888
-#      DATABASE_HOST: postgres
-#      DATABASE_PORT: 5432
-#    ports:
-#      - "8080:8080"
-#
-#  organization-service:
-#    image: abaig316/eagleeye.organization-service
-#    depends_on:
-#      - eureka-server
-#      - config-server
-#      - postgres
-#    environment:
-#      PROFILE: docker
-#      ENCRYPT_KEY: ${ENCRYPT_KEY}
-#      EUREKASERVER_HOST: eureka-server
-#      EUREKASERVER_PORT: 8761
-#      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
-#      CONFIGSERVER_PORT: 8888
-#      DATABASE_HOST: postgres
-#      DATABASE_PORT: 5432
-#    ports:
-#      - "8081:8081"
-#
-#  zuul-server:
-#    image: abaig316/eagleeye.zuul-server
-#    environment:
-#      PROFILE: docker
-#      ENCRYPT_KEY: ${ENCRYPT_KEY}
-#      EUREKASERVER_HOST: eureka-server
-#      EUREKASERVER_PORT: 8761
-#      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
-#      CONFIGSERVER_PORT: 8888
-#    ports:
-#      - "5555:5555"
-#    depends_on:
-#      - eureka-server
-#      - config-server
-#
-#  config-server:
-#    image: abaig316/eagleeye.config-server
-#    environment:
-#      PROFILE: docker
-#      ENCRYPT_KEY: ${ENCRYPT_KEY}
-#      EUREKASERVER_HOST: eureka-server
-#      EUREKASERVER_PORT: 8761
-#      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
-#    ports:
-#      - "8888:8888"
-#    depends_on:
-#      - eureka-server
-#      - gitea
+  licensing-service:
+    image: abaig316/eagleeye.licensing-service
+    depends_on:
+      - authentication-service
+      - eureka-server
+      - config-server
+      - postgres
+      - redis
+    environment:
+      PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
+      CONFIGSERVER_PORT: 8888
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+    ports:
+      - "8080:8080"
+
+  organization-service:
+    image: abaig316/eagleeye.organization-service
+    depends_on:
+      - authentication-service
+      - eureka-server
+      - config-server
+      - postgres
+    environment:
+      PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
+      CONFIGSERVER_PORT: 8888
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+    ports:
+      - "8081:8081"
+
+  authentication-service:
+    image: abaig316/eagleeye.authentication-service
+    depends_on:
+      - eureka-server
+      - config-server
+    environment:
+      PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
+      CONFIGSERVER_PORT: 8888
+    ports:
+      - "8901:8901"
+
+  zuul-server:
+    image: abaig316/eagleeye.zuul-server
+    environment:
+      PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
+      CONFIGSERVER_PORT: 8888
+    ports:
+      - "5555:5555"
+    depends_on:
+      - eureka-server
+      - config-server
+      - licensing-service
+      - organization-service
+      - authentication-service
+
+  config-server:
+    image: abaig316/eagleeye.config-server
+    environment:
+      PROFILE: docker
+      ENCRYPT_KEY: ${ENCRYPT_KEY}
+      EUREKASERVER_HOST: eureka-server
+      EUREKASERVER_PORT: 8761
+      EUREKASERVER_URI: "http://eureka-server:8761/eureka"
+    ports:
+      - "8888:8888"
+    depends_on:
+      - eureka-server
+      - gitea
 
   eureka-server:
     image: abaig316/eagleeye.eureka-server
