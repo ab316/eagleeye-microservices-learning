@@ -1,6 +1,5 @@
 package com.learning.eagleeye.organization.events.source;
 
-import com.learning.eagleeye.common.usercontext.UserContext;
 import com.learning.eagleeye.common.usercontext.UserContextHolder;
 import com.learning.eagleeye.organization.events.model.OrganizationChangeModel;
 import lombok.extern.slf4j.Slf4j;
