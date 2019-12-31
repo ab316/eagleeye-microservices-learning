@@ -1,6 +1,5 @@
 package com.learning.eagleeye.licenses.service;
 
-import com.learning.eagleeye.licenses.client.OrganizationRestTemplateClient;
 import com.learning.eagleeye.licenses.model.License;
 import com.learning.eagleeye.licenses.model.Organization;
 import com.learning.eagleeye.licenses.repository.LicenseRepository;
@@ -10,19 +9,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class LicenseService {
 
+    private OrganizationService organizationService;
     private LicenseRepository licenseRepository;
-    private OrganizationRestTemplateClient organizationClient;
 
     @Autowired
-    public LicenseService(LicenseRepository licenseRepository, OrganizationRestTemplateClient organizationFeignClient) {
+    public LicenseService(OrganizationService organizationService, LicenseRepository licenseRepository) {
+        this.organizationService = organizationService;
         this.licenseRepository = licenseRepository;
-        this.organizationClient = organizationFeignClient;
     }
 
     public Optional<License> getLicense(String licenseId) {
@@ -46,9 +48,9 @@ public class LicenseService {
             commandProperties = {
                     @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
                     @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "75"),
-                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value="5000"),
-                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value="15000"),
-                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value="5")
+                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "5000"),
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "15000"),
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "5")
             }
             // See https://github.com/Netflix/Hystrix/wiki/Configuration for details
     )
@@ -86,17 +88,16 @@ public class LicenseService {
     }
 
     private Optional<Organization> getOrganization(String organizationId) {
-        return organizationClient.getOrganization(organizationId);
+        return organizationService.getOrganization(organizationId);
     }
 
     public List<License> fallbackGetLicensesByOrg(String organizationId, Throwable throwable) {
-        log.warn("Fallback Get Licenses by Organization Id called: [{}]", throwable.getMessage());
+        log.warn("Generating fallback license due to: [{}]", throwable.getMessage());
         List<License> licenses = new ArrayList<>();
         licenses.add(new License()
                 .withId("0")
                 .withOrganizationId(organizationId)
-                .withProductName("Failed to retrieve license"))
-        ;
+                .withProductName("Failed to retrieve license"));
         return licenses;
     }
 }
