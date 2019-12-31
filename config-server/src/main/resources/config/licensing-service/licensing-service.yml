@@ -1,3 +1,12 @@
+############## BEGIN CUSTOM CONFIGURATION ##############
+signing:
+  key: "{cipher}4c704140eae590379fc1ba34f5878fb855278ee87d2bdc7c99cd8d4c8e0eb93b7da769427fb392535a2bfb37e1de57a8"
+
+redis:
+  host: localhost
+  port: 6379
+############## END CUSTOM CONFIGURATION ##############
+
 logging:
   level:
     com.netflix: WARN
@@ -5,6 +14,7 @@ logging:
     com.learning.eagleeye.*: DEBUG
 
 spring:
+  # Spring Data
   jpa:
     database: PostgreSQL
     show-sql: false
@@ -17,6 +27,7 @@ spring:
     username: postgres
     password: "{cipher}924df29cf1dd92347d499f8fd0ef0f9b30f53cb77fbf89f5d2bfc3254204d441"
 
+  # Spring Cloud
   cloud:
     stream:
       bindings:
@@ -25,12 +36,12 @@ spring:
           content-type: application/json
           group: licensingGroup
   rabbitmq:
-    addresses:
-      - http://localhost:5672
+    host: localhost
+    port: 5672
     username: admin
     password: admin
 
-
+# Spring Security
 security:
   oauth2:
     client:
@@ -38,21 +49,13 @@ security:
     resource:
       userInfoUri: http://localhost:8901/user
 
-signing:
-  key: "{cipher}4c704140eae590379fc1ba34f5878fb855278ee87d2bdc7c99cd8d4c8e0eb93b7da769427fb392535a2bfb37e1de57a8"
-
+# Spring Actuator
 management:
   endpoints:
     web:
       exposure:
         include: '*'
-
   endpoint:
     health.showDetails: always
-
   info:
     git.mode: full
-
-redis:
-  host: localhost
-  port: 6379

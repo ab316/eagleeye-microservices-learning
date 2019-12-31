@@ -1,14 +1,23 @@
+redis:
+  host: redis
+  port: 6379
+
 spring:
+  # Spring Data
   datasource:
     url: jdbc:postgresql://postgres:5432/eagleeye_local
     username: postgres
     password: "{cipher}924df29cf1dd92347d499f8fd0ef0f9b30f53cb77fbf89f5d2bfc3254204d441"
 
+  # Spring Cloud
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: admin
+    password: admin
+
+# Spring Security
 security:
   oauth2:
     resource:
       userInfoUri: http://authentication-service:8901/user
-
-redis:
-  host: redis
-  port: 6379
