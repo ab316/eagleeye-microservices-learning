@@ -14,4 +14,5 @@ echo "Starting @project.artifactId@"
 echo "******************************************************************************************"
 java  -Deureka.client.serviceUrl.defaultZone="$EUREKASERVER_URI" \
       -Dspring.profiles.active="$PROFILE" \
+      -Dspring.cloud.config.server.git.uri="$GIT_REPOSITORY_URI" \
       -jar /usr/local/@project.artifactId@/@project.build.finalName@.jar
