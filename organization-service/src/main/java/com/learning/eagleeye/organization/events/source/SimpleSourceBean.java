@@ -1,6 +1,5 @@
 package com.learning.eagleeye.organization.events.source;
 
-import com.learning.eagleeye.common.usercontext.UserContextHolder;
 import com.learning.eagleeye.organization.events.model.OrganizationChangeModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +23,7 @@ public class SimpleSourceBean {
         OrganizationChangeModel change = new OrganizationChangeModel(
                 OrganizationChangeModel.class.getTypeName(),
                 action,
-                orgId,
-                UserContextHolder.getUserContext().getCorrelationId()
+                orgId
         );
 
         source.output().send(MessageBuilder.withPayload(change).build());

@@ -14,10 +14,7 @@ public class UserContextFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
-        UserContextHolder.getUserContext().setCorrelationId(servletRequest.getHeader(UserContext.CORRELATION_ID));
         UserContextHolder.getUserContext().setAuthToken(servletRequest.getHeader(UserContext.AUTH_TOKEN));
-
-        log.debug("Incoming Correlation id: {}", UserContextHolder.getUserContext().getCorrelationId());
 
         chain.doFilter(servletRequest, response);
     }

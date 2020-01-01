@@ -1,5 +1,6 @@
 package com.learning.eagleeye.zuul.filters;
 
+import brave.Tracer;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -14,9 +15,12 @@ public class ResponseFilter extends ZuulFilter {
     private static final boolean SHOULD_FILTER = true;
     private final FilterUtils filterUtils;
 
+    Tracer tracer;
+
     @Autowired
-    public ResponseFilter(FilterUtils filterUtils) {
+    public ResponseFilter(FilterUtils filterUtils, Tracer tracer) {
         this.filterUtils = filterUtils;
+        this.tracer = tracer;
     }
 
     @Override
@@ -37,9 +41,8 @@ public class ResponseFilter extends ZuulFilter {
     @Override
     public Object run() throws ZuulException {
         RequestContext ctx = RequestContext.getCurrentContext();
-        log.debug("Adding the correlation id to the outbound headers: {}", filterUtils.getCorrelationId());
 
-        ctx.getResponse().addHeader(FilterUtils.CORRELATION_ID, filterUtils.getCorrelationId());
+        ctx.getResponse().addHeader(FilterUtils.CORRELATION_ID, tracer.currentSpan().context().traceIdString());
 
         log.debug("Completing outgoing request for {}", ctx.getRequest().getRequestURI());
 
