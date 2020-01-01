@@ -1,5 +1,6 @@
 package com.learning.eagleeye.organization.service;
 
+import brave.Tracer;
 import com.learning.eagleeye.organization.events.source.SimpleSourceBean;
 import com.learning.eagleeye.organization.model.Organization;
 import com.learning.eagleeye.organization.repository.OrganizationRepository;
@@ -13,17 +14,25 @@ import java.util.UUID;
 @Service
 public class OrganizationService {
 
+    private Tracer tracer;
     private OrganizationRepository organizationRepository;
     private SimpleSourceBean simpleSourceBean;
 
     @Autowired
-    public OrganizationService(OrganizationRepository organizationRepository, SimpleSourceBean simpleSourceBean) {
+    public OrganizationService(Tracer tracer, OrganizationRepository organizationRepository, SimpleSourceBean simpleSourceBean) {
+        this.tracer = tracer;
         this.organizationRepository = organizationRepository;
         this.simpleSourceBean = simpleSourceBean;
     }
 
     public Optional<Organization> get(String organizationId) {
-        return organizationRepository.findById(organizationId);
+        var span = tracer.startScopedSpan("getOrgDbCall");
+        try {
+            return organizationRepository.findById(organizationId);
+        } finally {
+            span.tag("peer.service", "postgres");
+            span.finish();
+        }
     }
 
     public Iterable<Organization> get() {

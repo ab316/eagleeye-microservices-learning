@@ -1,5 +1,6 @@
 package com.learning.eagleeye.licenses.service;
 
+import brave.Tracer;
 import com.learning.eagleeye.licenses.client.OrganizationRestTemplateClient;
 import com.learning.eagleeye.licenses.model.Organization;
 import com.learning.eagleeye.licenses.repository.OrganizationRedisRepository;
@@ -13,11 +14,13 @@ import java.util.Optional;
 @Slf4j
 public class OrganizationService {
 
+    private Tracer tracer;
     private OrganizationRedisRepository organizationRepository;
     private OrganizationRestTemplateClient client;
 
     @Autowired
-    public OrganizationService(OrganizationRedisRepository organizationRepository, OrganizationRestTemplateClient client) {
+    public OrganizationService(Tracer tracer, OrganizationRedisRepository organizationRepository, OrganizationRestTemplateClient client) {
+        this.tracer = tracer;
         this.organizationRepository = organizationRepository;
         this.client = client;
     }
@@ -33,11 +36,15 @@ public class OrganizationService {
     }
 
     private Optional<Organization> getOrganizationFromCache(String organizationId) {
+        var span = tracer.startScopedSpan("readLicensingDataFromRedis");
         try {
             return organizationRepository.findById(organizationId);
         } catch (Exception ex) {
             log.warn("Failed to retrieve from cache: [{}]", ex.getMessage());
             return Optional.empty();
+        } finally {
+            span.tag("peer.service", "redis");
+            span.finish();
         }
     }
 
