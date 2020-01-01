@@ -15,6 +15,8 @@ spring:
     port: 5672
     username: admin
     password: admin
+  zipkin:
+    baseUrl: http://zipkin:9411
 
 # Spring Security
 security:
